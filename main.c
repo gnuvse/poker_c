@@ -9,8 +9,8 @@ int main()
     // Card deck
     const char *suit[ 4] = {"Hearts", "Diamonds", "Clubs", "Spades"};
     const char *face[13] = {"Ace", "Two", "Three", "Four",
-                      "Five", "Six", "Seven", "Eight",
-                      "Nine", "Ten", "Jack", "Queen", "King"};
+                            "Five", "Six", "Seven", "Eight",
+                            "Nine", "Ten", "Jack", "Queen", "King"};
 
     // Data deck and players
     int deck[4][13] = {{0}};
@@ -79,20 +79,39 @@ int main()
 
     printf("Flash? %d\n", combination_on_suit(repeat_suit));
     printf("Straight? %d\n", combination_on_sequence(repeat_face));*/
-    printf("p1 = %d; p2 = %d\n", p_hand1, p_hand2);
-    printf("Player%d win!!\n", identify_power_hand(p_hand1, p_hand2));
-
-    printf("\n");
-    printf("\n");
-    printf("\n");
-
-    print_a(repeat_face, 13);
-    printf("\n");
 
     printf("Asses power hand: p2 %d!!\n", assess_power_hand(p_hand2));
     marking_array(repeat_face, assess_power_hand(p_hand2), 13);
     printf("\n");
     print_a(repeat_face, 13);
+
+
+    printf("\n");
+    printf("\n");
+    printf("\n");
+
+
+    printf("Player2:\n");
+    print_deal(face, suit, p2);
+    printf("\n");
+
+
+    deal_after_cards_change(deck, p2);
+    int assess = assess_power_hand(p_hand2);
+    repeat_card_after_resubmission(p2, repeat_face, repeat_suit, assess);
+    p_hand2 = max_on_3(combination_on_face(repeat_face, face),
+                       combination_on_suit(repeat_suit),
+                       combination_on_sequence(repeat_face));
+
+    printf("Player2:\n");
+    print_deal_after_resubmission(p2, face, suit, assess);
+    printf("\n");
+
+    printf("p1 = %d; p2 = %d\n", p_hand1, p_hand2);
+    printf("Player%d win!!\n", identify_power_hand(p_hand1, p_hand2));
+
+    print_a(repeat_face, 13);
+
     printf("\n");
 
 
@@ -132,6 +151,18 @@ void deal(int deck[][13], int p1[][13], int p2[][13])
                     /*printf("%5s of %-8s%c", face[column],
                            suit[row],card % 2 == 0 ? '\n' : '\t');*/
                 }
+}
+
+void deal_after_cards_change(int deck[][13], int p2[][13])
+{
+    int card, row, column;
+
+    for (card = 11; card < 53; card++)
+        for (row = 0; row < 4; row++)
+            for (column = 0; column < 13; column++)
+                if (deck[row][column] == card)
+                    if (card % 2 == 0)
+                        p2[row][column] = deck[row][column];
 }
 
 void marking_array(int repeat_face[], int count_mark, int size)
@@ -265,6 +296,17 @@ void print_deal(const char *face[], const char *suit[], int p[][13])
 
 }
 
+void print_deal_after_resubmission(int p[][13], const char *face[], const char *suit[], int assess)
+{
+    for (int card = 11; card < 11 + assess; card++)
+        for (int row = 0; row < 4; row++)
+            for (int column = 0; column < 13; column++)
+                if (p[row][column] == card)
+                    printf("%5s of %-8s\n", face[column],
+                            suit[row]);
+}
+
+
 void repeat_card(int p[][13], int repeat_face[], int repeat_suit[])
 {
     for (int card = 1; card < 11; card++)
@@ -275,6 +317,18 @@ void repeat_card(int p[][13], int repeat_face[], int repeat_suit[])
                     ++repeat_suit[row];
                 }
 }
+
+void repeat_card_after_resubmission(int p[][13], int repeat_face[], int repeat_suit[], int assess)
+{
+    for (int card = 11; card < 11 + assess; card++)
+        for (int row = 0; row < 4; row++)
+            for (int column = 0; column < 13; column++)
+                if (p[row][column] == card) {
+                    ++repeat_face[column];
+                    ++repeat_suit[row];
+                }
+}
+
 
 int max_on_3(int a, int b, int c)
 {
