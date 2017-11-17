@@ -99,6 +99,7 @@ int main()
     deal_after_cards_change(deck, p2);
     int assess = assess_power_hand(p_hand2);
     repeat_card_after_resubmission(p2, repeat_face, repeat_suit, assess);
+    zeroing_a(repeat_suit, 4);
     p_hand2 = max_on_3(combination_on_face(repeat_face, face),
                        combination_on_suit(repeat_suit),
                        combination_on_sequence(repeat_face));
@@ -111,6 +112,8 @@ int main()
     printf("Player%d win!!\n", identify_power_hand(p_hand1, p_hand2));
 
     print_a(repeat_face, 13);
+    printf("\n");
+    print_a(repeat_suit, 4);
 
     printf("\n");
 
